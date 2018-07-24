@@ -15,12 +15,17 @@ namespace Task2
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Initialize queue of length = capacity
+        /// </summary>
+        /// <param name="capacity"> Length of queue </param>
         public Queue(int capacity = 4)
         {
             if (capacity < 0)
             {
                 throw new ArgumentException($"The {nameof(capacity)} can't be less than 0!");
             }
+
             _data = new T[capacity];
 
             _head = 0;
@@ -28,12 +33,17 @@ namespace Task2
             _size = 0;
         }
 
+        /// <summary>
+        /// Initialize queue and copy items 
+        /// </summary>
+        /// <param name="items"> Items for corying </param>
         public Queue(IEnumerable<T> items)
         {
             if (items == null)
             {
                 throw new ArgumentException($"The {nameof(items)} can't be null!");
             }
+
             _data = new T[items.Count()];
             _size = 0;
 
@@ -45,10 +55,17 @@ namespace Task2
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Count of elements in queue
+        /// </summary>
         public int Count => _size;
         #endregion
 
         #region Public methods
+        /// <summary>
+        /// Add item in queue
+        /// </summary>
+        /// <param name="item"> Item for adding </param>
         public void Enqueue(T item)
         {
             if (_size == _data.Length)
@@ -61,6 +78,10 @@ namespace Task2
             _size++;
         }
 
+        /// <summary>
+        /// Exclude first element of queue
+        /// </summary>
+        /// <returns> Head value </returns>
         public T Dequeue()
         {
             if (_size == 0)
@@ -72,12 +93,16 @@ namespace Task2
 
             _data[_head] = default(T);
 
-            _head++; ;
+            _head++;
             _size--;
 
             return result;
         }
 
+        /// <summary>
+        /// Get head value
+        /// </summary>
+        /// <returns> Head value </returns>
         public T Peek()
         {
             if (_size == 0)
@@ -88,6 +113,9 @@ namespace Task2
             return _data[_head];
         }
 
+        /// <summary>
+        /// Clear queue
+        /// </summary>
         public void Clear()
         {
             Array.Clear(_data, 0, _size);
@@ -97,12 +125,24 @@ namespace Task2
             _size = 0;
         }
 
+        /// <summary>
+        /// Get iterator
+        /// </summary>
+        /// <returns> Iterator </returns>
         public IEnumerator<T> GetEnumerator() => new Iterator(this);
-        #endregion
 
+        /// <summary>
+        /// Get iterator
+        /// </summary>
+        /// <returns> Iterator </returns>
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
+        /// <summary>
+        /// Get iterator
+        /// </summary>
+        /// <returns> Iterator </returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        #endregion
 
         #region Iterator
         private struct Iterator : IEnumerator<T>
@@ -124,6 +164,7 @@ namespace Task2
                     {
                         throw new InvalidOperationException();
                     }
+
                     return _collection._data[_currentIndex];
                 }
             }
@@ -140,7 +181,9 @@ namespace Task2
                 return ++_currentIndex < _collection.Count;
             }
 
-            void IDisposable.Dispose() { }
+            void IDisposable.Dispose()
+            {
+            }
         }
         #endregion
     }
