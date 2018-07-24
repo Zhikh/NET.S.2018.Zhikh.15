@@ -264,3 +264,4 @@ __pycache__/
 AssemblyInfo.cs
 .config
 packages.config
+*.StyleCop
