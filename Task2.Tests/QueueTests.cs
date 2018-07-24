@@ -10,6 +10,37 @@ namespace Task2.Tests
     [TestFixture]
     public class QueueTests
     {
+        #region TestData
+        private Person[][] _sourceData = 
+        {
+            new Person[]
+            {
+                new Person { LastName = "Smbd", Name = "Smbd"},
+                new Person { LastName = "Smbd1", Name = "Smbd1"}
+            },
+            new Person[]
+            {
+                new Person { LastName = "Smbd", Name = "Smbd"},
+                new Person { LastName = "Smbd1", Name = "Smbd1"},
+                new Person { LastName = "Smbd2", Name = "Smbd2"},
+                new Person { LastName = "Smbd3", Name = "Smbd3"}
+            },
+            new Person[]
+            {
+                new Person { LastName = "Smbd", Name = "Smbd"},
+                new Person { LastName = "Smbd1", Name = "Smbd1"},
+                new Person { LastName = "Smbd2", Name = "Smbd2"},
+                new Person { LastName = "Smbd3", Name = "Smbd3"},
+                null,
+                new Person { LastName = "Smbd4", Name = "Smbd4"},
+                new Person { LastName = "Smbd5", Name = "Smbd5"},
+                null
+            },
+        };
+
+        private int[] _countData = { 1, 3, 5 };
+        #endregion
+
         #region Exceptions
         [Test]
         public void Queue_NegativeValue_ArgumentException()
@@ -52,7 +83,7 @@ namespace Task2.Tests
         [TestCase(new int[] { 1, 2, 3, 4, 5 })]
         [TestCase(new int[] { 78, 902, 43, -4, 88, -199 })]
         [TestCase(new int[] { 78, 902, 43, -4, 88, -199, int.MinValue, int.MinValue, 90, int.MaxValue })]
-        public void Enque_IntValue_AddingValueInQueue(int[] items)
+        public void Enqueue_IntValue_AddingValueInQueue(int[] items)
         {
             var queue = new Queue<int>();
 
@@ -73,7 +104,7 @@ namespace Task2.Tests
         [TestCase(1000)]
         [TestCase(10000)]
         [TestCase(1000000)]
-        public void Enque_BigAmountOfValues_AddingValueInQueue(int count)
+        public void Enqueue_BigAmountOfValues_AddingValueInQueue(int count)
         {
             var queue = new Queue<int>();
 
@@ -88,6 +119,26 @@ namespace Task2.Tests
             foreach (var item in queue)
             {
                 Assert.AreEqual(items[j++], item);
+            }
+        }
+
+        [Test]
+        public void Enque_ObjectValues_AddingValueInQueue()
+        {
+            for (int j = 0; j < _sourceData.Length; j++)
+            {
+                var queue = new Queue<Person>();
+
+                foreach (var item in _sourceData[j])
+                {
+                    queue.Enqueue(item);
+                }
+
+                int i = 0;
+                foreach (var item in queue)
+                {
+                    Assert.AreEqual(_sourceData[j][i++], item);
+                }
             }
         }
         #endregion
@@ -161,6 +212,28 @@ namespace Task2.Tests
                 Assert.AreEqual(expected, actual);
             }
         }
+        
+        [Test]
+        public void Dequeue_ObjectValues_ExcludeValueFromQueue()
+        {
+            for (int j = 0; j < _sourceData.Length; j++)
+            {
+                var queue = new Queue<Person>();
+
+                foreach (var item in _sourceData[j])
+                {
+                    queue.Enqueue(item);
+                }
+
+                for (int i = 0; i < _countData[j]; i++)
+                {
+                    Person expected = _sourceData[j][i];
+                    Person actual = queue.Dequeue();
+
+                    Assert.AreEqual(expected, actual);
+                }
+            }
+        }
         #endregion
 
         #region Peek
@@ -186,6 +259,30 @@ namespace Task2.Tests
             int actual = queue.Peek();
 
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Peek_ObjectValues_GetHeadValueFromQueue()
+        {
+            for (int j = 0; j < _sourceData.Length; j++)
+            {
+                var queue = new Queue<Person>();
+
+                foreach (var item in _sourceData[j])
+                {
+                    queue.Enqueue(item);
+                }
+
+                for (int i = 0; i < _countData[j]; i++)
+                {
+                    queue.Dequeue();
+                }
+
+                Person expected = _sourceData[j][_countData[j]];
+                Person actual = queue.Peek();
+
+                Assert.AreEqual(expected, actual);
+            }
         }
         #endregion
     }
