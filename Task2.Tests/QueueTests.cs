@@ -74,6 +74,24 @@ namespace Task2.Tests
             
             Assert.Catch<InvalidOperationException>(() => { var temp = iterator.Current; });
         }
+
+        [Test]
+        public void Iterate_ChangeCollection_ArgumentException()
+        {
+            var queue = new Queue<int>();
+            var iterator = queue.GetEnumerator();
+
+            queue.Enqueue(10);
+            queue.Enqueue(20);
+
+            Assert.Catch<ArgumentException>(() => 
+            {
+                foreach (var element in queue)
+                {
+                    queue.Dequeue();
+                }
+            });
+        }
         #endregion
 
         #region Enqueue
