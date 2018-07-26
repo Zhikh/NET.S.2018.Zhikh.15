@@ -12,6 +12,7 @@ namespace Task2
         private int _head;
         private int _tail;
         private int _size;
+        private int _version;
         #endregion
 
         #region Constructors
@@ -31,6 +32,7 @@ namespace Task2
             _head = 0;
             _tail = 0;
             _size = 0;
+            _version = 0;
         }
 
         /// <summary>
@@ -46,6 +48,7 @@ namespace Task2
 
             _data = new T[items.Count()];
             _size = 0;
+            _version = 0;
 
             foreach (T item in items)
             {
@@ -76,6 +79,7 @@ namespace Task2
             _data[_tail] = item;
             _tail++;
             _size++;
+            _version++;
         }
 
         /// <summary>
@@ -95,6 +99,7 @@ namespace Task2
 
             _head++;
             _size--;
+            _version++;
 
             return result;
         }
@@ -123,6 +128,7 @@ namespace Task2
             _head = 0;
             _tail = 0;
             _size = 0;
+            _version = 0;
         }
 
         /// <summary>
@@ -149,11 +155,13 @@ namespace Task2
         {
             private readonly Queue<T> _collection;
             private int _currentIndex;
+            private int _currentVersion;
 
             public Iterator(Queue<T> collection)
             {
                 this._currentIndex = -1;
                 this._collection = collection;
+                this._currentVersion = collection._version;
             }
 
             public T Current
@@ -178,6 +186,11 @@ namespace Task2
 
             public bool MoveNext()
             {
+                if (_currentVersion != _collection._version)
+                {
+                    throw new ArgumentException("Collection can't change during iteration!");
+                }
+
                 return ++_currentIndex < _collection.Count;
             }
 
