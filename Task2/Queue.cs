@@ -20,6 +20,7 @@ namespace Task2
         /// Initialize queue of length = capacity
         /// </summary>
         /// <param name="capacity"> Length of queue </param>
+        /// <exception cref="ArgumentException"> If capacity is negative value </exception>
         public Queue(int capacity = 8)
         {
             if (capacity < 0)
@@ -39,11 +40,12 @@ namespace Task2
         /// Initialize queue and copy items 
         /// </summary>
         /// <param name="items"> Items for corying </param>
+        /// <exception cref="ArgumentNullException"> If parameter items is null </exception>
         public Queue(IEnumerable<T> items)
         {
             if (items == null)
             {
-                throw new ArgumentException($"The {nameof(items)} can't be null!");
+                throw new ArgumentNullException($"The {nameof(items)} can't be null!");
             }
 
             _data = new T[items.Count()];
@@ -95,11 +97,12 @@ namespace Task2
         /// Exclude first element of queue
         /// </summary>
         /// <returns> Head value </returns>
+        /// <exception cref="InvalidOperationException"> If thire are no elements in queue </exception>
         public T Dequeue()
         {
             if (_size == 0)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("There are not elements in queue!");
             }
 
             T result = _data[_head];
@@ -117,11 +120,12 @@ namespace Task2
         /// Get head value
         /// </summary>
         /// <returns> Head value </returns>
+        /// <exception cref="InvalidOperationException"> If thire are no elements in queue </exception>
         public T Peek()
         {
             if (_size == 0)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("There are not elements in queue!");
             }
 
             return _data[_head];
@@ -166,6 +170,10 @@ namespace Task2
             private int _currentIndex;
             private int _currentVersion;
 
+            /// <summary>
+            /// Initialize collection of type Queue
+            /// </summary>
+            /// <param name="collection"></param>
             public Enumerator(Queue<T> collection)
             {
                 this._currentIndex = -1;
@@ -173,7 +181,9 @@ namespace Task2
                 this._currentVersion = collection._version;
             }
 
-            // called by foreach
+            /// <summary>
+            /// Return current element of collection (called by foreach)
+            /// </summary>
             public T Current
             {
                 get
@@ -191,11 +201,18 @@ namespace Task2
 
             object IEnumerator.Current => Current;
 
+            /// <summary>
+            /// Reset iteration
+            /// </summary>
             public void Reset()
             {
                 _currentIndex = -1;
             }
 
+            /// <summary>
+            /// Check possibility of moving to next element in collectiom
+            /// </summary>
+            /// <returns> If elements of collection are ended, false, else true </returns>
             public bool MoveNext()
             {
                 if (_currentVersion != _collection._version)
