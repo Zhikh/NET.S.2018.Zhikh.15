@@ -95,6 +95,42 @@ namespace Task2.Tests
         #endregion
 
         #region Enqueue
+        [TestCase(new int[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 0, 
+            ExpectedResult = new int[] { 2, 3, 4, 5, 6, 7, 8, 0} )]
+        public IEnumerable<int> Enque_CycleInsertWithoutResize_CorrectResult(int[] items, int value)
+        {
+            var queue = new Queue<int>();
+
+            foreach (var item in items)
+            {
+                queue.Enqueue(item);
+            }
+
+            queue.Dequeue();
+            queue.Enqueue(value);
+
+            return queue;
+        }
+
+        [TestCase(new int[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 0,
+            ExpectedResult = new int[] { 2, 3, 4, 5, 6, 7, 8, 0, 0 })]
+        public IEnumerable<int> Enque_CycleInsertWithResize_CorrectResult(int[] items, int value)
+        {
+            var queue = new Queue<int>();
+
+            foreach (var item in items)
+            {
+                queue.Enqueue(item);
+            }
+
+            queue.Dequeue();
+
+            queue.Enqueue(value);
+            queue.Enqueue(value);
+
+            return queue;
+        }
+
         [TestCase(new int[] { })]
         [TestCase(new int[] { 1 })]
         [TestCase(new int[] { 1, 2, 3, 4 })]
