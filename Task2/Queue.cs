@@ -20,7 +20,7 @@ namespace Task2
         /// Initialize queue of length = capacity
         /// </summary>
         /// <param name="capacity"> Length of queue </param>
-        public Queue(int capacity = 4)
+        public Queue(int capacity = 8)
         {
             if (capacity < 0)
             {
@@ -73,7 +73,16 @@ namespace Task2
         {
             if (_size == _data.Length)
             {
-                Array.Resize(ref _data, _data.Length * 2);
+                if (_tail <= _head)
+                {
+                    ReorderElements();
+                }
+
+                Array.Resize(ref _data, _data.Length + 4);
+            }
+            else if (_tail == _data.Length)
+            {
+                _tail = 0;
             }
 
             _data[_tail] = item;
@@ -123,7 +132,7 @@ namespace Task2
         /// </summary>
         public void Clear()
         {
-            Array.Clear(_data, 0, _size);
+            Array.Clear(_data, 0, _data.Length);
             
             _head = 0;
             _tail = 0;
@@ -135,7 +144,7 @@ namespace Task2
         /// Get iterator
         /// </summary>
         /// <returns> Iterator </returns>
-        public IEnumerator<T> GetEnumerator() => new Iterator(this);
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
         /// <summary>
         /// Get iterator
@@ -151,29 +160,32 @@ namespace Task2
         #endregion
 
         #region Iterator
-        private struct Iterator : IEnumerator<T>
+        public struct Enumerator : IEnumerator<T>
         {
             private readonly Queue<T> _collection;
             private int _currentIndex;
             private int _currentVersion;
 
-            public Iterator(Queue<T> collection)
+            public Enumerator(Queue<T> collection)
             {
                 this._currentIndex = -1;
                 this._collection = collection;
                 this._currentVersion = collection._version;
             }
 
+            // called by foreach
             public T Current
             {
                 get
                 {
                     if (_currentIndex == -1 || _currentIndex == _collection.Count)
                     {
-                        throw new InvalidOperationException();
+                        throw new InvalidOperationException($"It's impossible to get {nameof(Current)} for {nameof(Queue<T>)}");
                     }
 
-                    return _collection._data[_currentIndex];
+                    int index = _currentIndex + _collection._head;
+                    index %= _collection._data.Length;
+                    return _collection._data[index];
                 }
             }
 
@@ -198,6 +210,25 @@ namespace Task2
             {
             }
         }
+        #endregion
+
+        #region Private methods
+        private void ReorderElements()
+        {
+            T[] temp = new T[_data.Length];
+
+            int i = 0;
+            foreach (var element in this)
+            {
+                temp[i++] = element;
+            }
+
+            Array.Copy(temp, _data, temp.Length);
+
+            _head = 0;
+            _tail = temp.Length;
+        }
+
         #endregion
     }
 }
