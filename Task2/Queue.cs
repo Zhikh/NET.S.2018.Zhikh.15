@@ -7,6 +7,11 @@ namespace Task2
 {
     public class Queue<T> : IEnumerable<T>
     {
+        #region Constants
+        private const int CAPASITY = 8;
+        private const int RESIZE_VALUE = 4;
+        #endregion
+
         #region Fields
         private T[] _data;
         private int _head;
@@ -21,7 +26,7 @@ namespace Task2
         /// </summary>
         /// <param name="capacity"> Length of queue </param>
         /// <exception cref="ArgumentException"> If capacity is negative value </exception>
-        public Queue(int capacity = 8)
+        public Queue(int capacity = CAPASITY)
         {
             if (capacity < 0)
             {
@@ -80,7 +85,7 @@ namespace Task2
                     ReorderElements();
                 }
 
-                Array.Resize(ref _data, _data.Length + 4);
+                Array.Resize(ref _data, _data.Length + RESIZE_VALUE);
             }
             else if (_tail == _data.Length)
             {
